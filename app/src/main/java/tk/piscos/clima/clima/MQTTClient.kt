@@ -66,20 +66,22 @@ class MQTTClient{
         })
     }
 
-    suspend fun disconnect():Unit= suspendCoroutine { cont ->
+    fun disconnect():Unit{
         topicListeners.clear()
-        val mqttToken=mqttAndroidClient.disconnect()
-        mqttAndroidClient.unregisterResources()
-
-        mqttToken!!.actionCallback = object : IMqttActionListener {
+        var callback= object : IMqttActionListener {
             override fun onSuccess(iMqttToken: IMqttToken) {
-                cont.resume(Unit)
+
             }
 
             override fun onFailure(iMqttToken: IMqttToken, throwable: Throwable) {
-                cont.resumeWithException(throwable)
+
             }
         }
+
+        mqttAndroidClient.unregisterResources()
+        mqttAndroidClient.close()
+        mqttAndroidClient.disconnect(null,callback)
+
     }
 
     private val topicListeners = HashMap<String, (String)->Unit>()

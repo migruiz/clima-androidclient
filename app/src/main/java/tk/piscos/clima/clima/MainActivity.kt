@@ -42,9 +42,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        GlobalScope.launch(Dispatchers.Main) {
-            GlobalScope.async { mqttClient.disconnect() }.await()
-        }
+        mqttClient.disconnect()
 
     }
 
@@ -67,12 +65,12 @@ class MainActivity : AppCompatActivity() {
             notifyDataSetChanged()
         }
         fun updateElement(updatedZone:ZoneCellModel){
-            val existingZone = elements.filter { it.zoneCode!!.compareTo(updatedZone.zoneCode!!,ignoreCase = true)==1 }.firstOrNull()
+            val existingZone = elements.firstOrNull { it.zoneCode!!.compareTo(updatedZone.zoneCode!!,ignoreCase = true)==1 }
             existingZone?.let {
-                existingZone.coverage = updatedZone.coverage
-                existingZone.humidity = updatedZone.humidity
-                existingZone.temperature = updatedZone.temperature
-                this.notifyItemChanged(elements.indexOf(existingZone))
+                it.coverage = updatedZone.coverage
+                it.humidity = updatedZone.humidity
+                it.temperature = updatedZone.temperature
+                this.notifyItemChanged(elements.indexOf(it))
             }
         }
 
