@@ -67,6 +67,23 @@ class MQTTClient{
 
     private val topicListeners = HashMap<String, (String)->Unit>()
 
+    suspend fun  listenForZonesChange(lambda:(ZoneCellModel)->Unit):Unit = suspendCoroutine { cont ->
+        val responseTopicName="zonesChange"
+        mqttAndroidClient.subscribe(responseTopicName, 0, null, object : IMqttActionListener {
+            override fun onSuccess(asyncActionToken: IMqttToken) {
+                topicListeners[responseTopicName] = {
+                    val result:ZoneCellModel = it.toJsonObject()
+                    lambda(result)
+                }
+                cont.resume(Unit)
+            }
+
+            override fun onFailure(asyncActionToken: IMqttToken, exception: Throwable) {
+
+                cont.resumeWithException(exception)
+            }
+        })
+    }
     suspend fun getZonesSummary():List<ZoneCellModel> = suspendCoroutine { cont ->
         val responseTopicName="AllZonesReadingResponse"
         var requestTopicName="AllZonesReadingsRequest"

@@ -21,12 +21,20 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         rv_zones.setHasFixedSize(true)
         rv_zones.layoutManager = LinearLayoutManager(this)
-        rv_zones.adapter=ZonesAdapter()
-        GlobalScope.launch(Dispatchers.Main){
-            val client=MQTTClient()
+        var zonesAdapter = ZonesAdapter()
+        rv_zones.adapter = zonesAdapter
+        GlobalScope.launch(Dispatchers.Main) {
+            val client = MQTTClient()
             GlobalScope.async { client.connectAsync(this@MainActivity) }.await()
-            val list=GlobalScope.async { client.getZonesSummary() }.await()
-            (rv_zones.adapter as ZonesAdapter).updateElements(list)
+            val list = GlobalScope.async { client.getZonesSummary() }.await()
+            zonesAdapter.updateElements(list)
+            GlobalScope.async {
+                client.listenForZonesChange {
+                    GlobalScope.launch(Dispatchers.Main) {
+                        zonesAdapter.updateElement(it)
+                    }
+                }
+            }.await()
         }
     }
 
@@ -46,6 +54,15 @@ class MainActivity : AppCompatActivity() {
             elements.clear()
             elements.addAll(newDetails)
             notifyDataSetChanged()
+        }
+        fun updateElement(updatedZone:ZoneCellModel){
+            val existingZone = elements.filter { it.zoneCode!!.compareTo(updatedZone.zoneCode!!,ignoreCase = true)==1 }.firstOrNull()
+            existingZone?.let {
+                existingZone.coverage = updatedZone.coverage
+                existingZone.humidity = updatedZone.humidity
+                existingZone.temperature = updatedZone.temperature
+                this.notifyItemChanged(elements.indexOf(existingZone))
+            }
         }
 
         override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int) =

@@ -1,5 +1,5 @@
 package tk.piscos.clima.clima
 
-class ZoneCellModel(val temperature:Double,val  humidity:Int,val  coverage:String?,val  zoneCode:String?){
+class ZoneCellModel(var temperature:Double,var  humidity:Int,var  coverage:String?,var  zoneCode:String?){
 
 }
