@@ -1,6 +1,7 @@
 package tk.piscos.clima.clima
 
 import android.content.Context
+import android.util.Log
 import com.google.gson.Gson
 import org.eclipse.paho.android.service.MqttAndroidClient
 import org.eclipse.paho.client.mqttv3.*
@@ -65,10 +66,26 @@ class MQTTClient{
         })
     }
 
+    suspend fun disconnect():Unit= suspendCoroutine { cont ->
+        topicListeners.clear()
+        val mqttToken=mqttAndroidClient.disconnect()
+        mqttAndroidClient.unregisterResources()
+
+        mqttToken!!.actionCallback = object : IMqttActionListener {
+            override fun onSuccess(iMqttToken: IMqttToken) {
+                cont.resume(Unit)
+            }
+
+            override fun onFailure(iMqttToken: IMqttToken, throwable: Throwable) {
+                cont.resumeWithException(throwable)
+            }
+        }
+    }
+
     private val topicListeners = HashMap<String, (String)->Unit>()
 
     suspend fun  listenForZonesChange(lambda:(ZoneCellModel)->Unit):Unit = suspendCoroutine { cont ->
-        val responseTopicName="zonesChange"
+        val responseTopicName="zoneClimateChange"
         mqttAndroidClient.subscribe(responseTopicName, 0, null, object : IMqttActionListener {
             override fun onSuccess(asyncActionToken: IMqttToken) {
                 topicListeners[responseTopicName] = {

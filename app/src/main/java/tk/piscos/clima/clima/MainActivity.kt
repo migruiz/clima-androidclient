@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
+    private val mqttClient= MQTTClient()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -23,20 +24,30 @@ class MainActivity : AppCompatActivity() {
         rv_zones.layoutManager = LinearLayoutManager(this)
         var zonesAdapter = ZonesAdapter()
         rv_zones.adapter = zonesAdapter
+        connectToMQTT(zonesAdapter)
+    }
+
+    private fun connectToMQTT(zonesAdapter: ZonesAdapter) {
         GlobalScope.launch(Dispatchers.Main) {
-            val client = MQTTClient()
-            GlobalScope.async { client.connectAsync(this@MainActivity) }.await()
-            val list = GlobalScope.async { client.getZonesSummary() }.await()
+            async { mqttClient.connectAsync(this@MainActivity) }.await()
+            val list = async { mqttClient.getZonesSummary() }.await()
             zonesAdapter.updateElements(list)
-            GlobalScope.async {
-                client.listenForZonesChange {
-                    GlobalScope.launch(Dispatchers.Main) {
-                        zonesAdapter.updateElement(it)
-                    }
+            async {
+                mqttClient.listenForZonesChange {
+                    zonesAdapter.updateElement(it)
                 }
             }.await()
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        GlobalScope.launch(Dispatchers.Main) {
+            GlobalScope.async { mqttClient.disconnect() }.await()
+        }
+
+    }
+
 
     private inner class ZoneItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
