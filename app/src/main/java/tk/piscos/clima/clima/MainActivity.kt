@@ -9,6 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.zones_summary_cell.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,6 +22,12 @@ class MainActivity : AppCompatActivity() {
         rv_zones.setHasFixedSize(true)
         rv_zones.layoutManager = LinearLayoutManager(this)
         rv_zones.adapter=ZonesAdapter()
+        GlobalScope.launch(Dispatchers.Main){
+            val client=MQTTClient()
+            GlobalScope.async { client.connectAsync(this@MainActivity) }.await()
+            val list=GlobalScope.async { client.getZonesSummary() }.await()
+            (rv_zones.adapter as ZonesAdapter).updateElements(list)
+        }
     }
 
     private inner class ZoneItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -35,10 +45,11 @@ class MainActivity : AppCompatActivity() {
         fun updateElements(newDetails: List<ZoneCellModel>) {
             elements.clear()
             elements.addAll(newDetails)
+            notifyDataSetChanged()
         }
 
         override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int) =
-            ZoneItemViewHolder(LayoutInflater.from(this@MainActivity).inflate(R.layout.activity_main, viewGroup, false))
+            ZoneItemViewHolder(LayoutInflater.from(this@MainActivity).inflate(R.layout.zones_summary_cell, viewGroup, false))
 
 
         override fun onBindViewHolder(holder: ZoneItemViewHolder, position: Int) = holder.bind(elements[position])
