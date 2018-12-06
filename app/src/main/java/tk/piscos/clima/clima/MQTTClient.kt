@@ -8,10 +8,10 @@ import toJson
 import toJsonObject
 import java.util.HashMap
 import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class MQTTClient{
-
     lateinit var mqttAndroidClient:MqttAndroidClient
     suspend fun  connectAsync(context: Context):Unit = suspendCoroutine { cont ->
 
@@ -60,29 +60,34 @@ class MQTTClient{
             }
 
             override fun onFailure(asyncActionToken: IMqttToken, exception: Throwable) {
-                //throw new RuntimeException(exception);
+                cont.resumeWithException(exception)
             }
         })
     }
 
     private val topicListeners = HashMap<String, (String)->Unit>()
+
     suspend fun getZonesSummary():List<ZoneCellModel> = suspendCoroutine { cont ->
+        val responseTopicName="AllZonesReadingResponse"
+        var requestTopicName="AllZonesReadingsRequest"
         val message = MqttMessage()
         message.payload = "request".toJson().toByteArray()
-        mqttAndroidClient.subscribe("AllZonesReadingResponse", 0, null, object : IMqttActionListener {
+        mqttAndroidClient.subscribe(responseTopicName, 0, null, object : IMqttActionListener {
             override fun onSuccess(asyncActionToken: IMqttToken) {
-                topicListeners["AllZonesReadingResponse"] = {
+                topicListeners[responseTopicName] = {
                     val result:List<ZoneCellModel> = it.toJsonObject()
+                    mqttAndroidClient.unsubscribe(responseTopicName)
+                    topicListeners.remove(responseTopicName)
                     cont.resume(result)
                 }
             }
 
             override fun onFailure(asyncActionToken: IMqttToken, exception: Throwable) {
 
-
+                cont.resumeWithException(exception)
             }
         })
 
-        mqttAndroidClient.publish("AllZonesReadingsRequest", message)
+        mqttAndroidClient.publish(requestTopicName, message)
     }
 }
