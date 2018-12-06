@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
             notifyDataSetChanged()
         }
         fun updateElement(updatedZone:ZoneCellModel){
-            val existingZone = elements.firstOrNull { it.zoneCode!!.compareTo(updatedZone.zoneCode!!,ignoreCase = true)==1 }
+            val existingZone = elements.firstOrNull { it.zoneCode.equals(updatedZone.zoneCode,ignoreCase = true) }
             existingZone?.let {
                 it.coverage = updatedZone.coverage
                 it.humidity = updatedZone.humidity
