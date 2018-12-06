@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#212121</color>
+    <color name="colorPrimaryLight">#323333</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#ff80ab</color>
+    <color name="textColor">#8e8e8e</color>
+    <color name="zoneTargetTemperature">#4d9c48</color>
+    <color name="zoneCoverage">#43899b</color>
+    <color name="zoneTargetBoilerOn">#ff7043</color>
+    <color name="boostColor">#ff5252</color>
 </resources>
