@@ -25,9 +25,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         rv_zones.setHasFixedSize(true)
         rv_zones.layoutManager = LinearLayoutManager(this)
-        var zonesAdapter = ZonesAdapter()
-        rv_zones.adapter = zonesAdapter
-        connectToMQTT(zonesAdapter)
+        rv_zones.adapter = ZonesAdapter()
+
     }
 
     private fun connectToMQTT(zonesAdapter: ZonesAdapter) {
@@ -43,9 +42,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onStop() {
+        // call the superclass method first
+        super.onStop()
+        mqttClient.disconnect()
+    }
+
+    override fun onStart() {
+        // call the superclass method first
+        super.onStart()
+        connectToMQTT(rv_zones.adapter as ZonesAdapter)
+    }
     override fun onDestroy() {
         super.onDestroy()
-        mqttClient.disconnect()
+
 
     }
 
