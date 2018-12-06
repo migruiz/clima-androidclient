@@ -24,6 +24,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <meta-data
+                android:name="io.fabric.ApiKey"
+                android:value="6e06ac566290e06b70f5fb0f28392391aadcb444" />
         <service android:name="org.eclipse.paho.android.service.MqttService">
         </service>
     </application>
