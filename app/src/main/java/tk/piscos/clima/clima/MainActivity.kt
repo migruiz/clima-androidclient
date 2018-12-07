@@ -1,18 +1,23 @@
 package tk.piscos.clima.clima
+import android.content.Context
+import android.content.DialogInterface
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import android.widget.NumberPicker
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.zones_summary_cell.view.*
 import com.crashlytics.android.Crashlytics;
 import getViewModel
 import io.fabric.sdk.android.Fabric;
 import observe
+import java.text.DecimalFormat
 
 class MainActivity : AppCompatActivity() {
 
@@ -62,6 +67,38 @@ class MainActivity : AppCompatActivity() {
             regulateSwitch.setOnCheckedChangeListener(null)
             targetTemperature.text=item.targetTemperature.toString()
             regulateSwitch.setOnCheckedChangeListener(checkListener)
+            targetTemperature.setOnClickListener {
+                val builder = AlertDialog.Builder(it.context)
+                val inflater = it.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val theView = inflater.inflate(R.layout.temperature_dialog_picker_layout, null)
+
+                val intTemp = theView.findViewById(R.id.int_picker) as NumberPicker
+                val decTemp = theView.findViewById(R.id.decimal_picker) as NumberPicker
+                builder.setView(theView).setPositiveButton("Target") { _, _ ->
+                    var temperature = (intTemp.value + decTemp.value * 0.1f).toDouble()
+                    temperature=Math.round(temperature*10.0)/10.0
+                    model.setTargetTemperature(item.zoneCode,temperature)
+                }.setNegativeButton("Cancel", null)
+                intTemp.minValue = 0
+                intTemp.maxValue = 25
+                decTemp.minValue = 0
+                decTemp.maxValue = 9
+
+                var targetTemperature=if(item.targetTemperature==null)20.0 else item.targetTemperature
+                val twoDForm = DecimalFormat("#.#")
+                targetTemperature = java.lang.Double.valueOf(twoDForm.format(targetTemperature))
+
+                val intTempPart = targetTemperature.toInt()
+                val delta = java.lang.Double.valueOf(twoDForm.format(targetTemperature - targetTemperature.toInt()))
+                val intPartDec = (delta * 10).toInt()
+                intTemp.value = intTempPart
+                decTemp.value = intPartDec
+
+
+                builder.show()
+
+            }
+
 
         }
     }

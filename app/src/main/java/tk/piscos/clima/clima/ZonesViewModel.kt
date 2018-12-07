@@ -18,6 +18,10 @@ class ZonesViewModel(application: Application): AndroidViewModel(application)  {
         val request = hashMapOf("Monitored" to value)
         mqttClient.publish("zoneIsMonitored/$zoneCode", request)
     }
+    fun setTargetTemperature(zoneCode:String,value:Double) {
+        val request = hashMapOf("temperature" to value)
+        mqttClient.publish("zoneLowestAllowedTemperature/$zoneCode", request)
+    }
     fun fetchData() {
         GlobalScope.launch(Dispatchers.Main) {
             val  modelList = getModel()
