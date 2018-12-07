@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
     private fun connectToMQTT(zonesAdapter: ZonesAdapter) {
         GlobalScope.launch(Dispatchers.Main) {
             async { mqttClient.connectAsync(this@MainActivity) }.await()
-            val list = async { mqttClient.getResponse<List<ZoneCellModel>>(requestTopic = "AllZonesReadingRequest",responseTopic = "AllZonesReadingResponse") }.await()
+            val list = async { mqttClient.getResponse<List<ZoneCellModel>>(requestTopic = "AllZonesReadingsRequest",responseTopic = "AllZonesReadingResponse") }.await()
             zonesAdapter.updateElements(list)
             async {
                 mqttClient.subscribe("ZoneClimateChange") {
