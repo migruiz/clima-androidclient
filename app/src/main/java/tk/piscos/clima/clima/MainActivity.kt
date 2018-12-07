@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.zones_summary_cell.view.*
 import com.crashlytics.android.Crashlytics;
@@ -49,14 +50,18 @@ class MainActivity : AppCompatActivity() {
 
     private inner class ZoneItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+
         fun bind(item:ZoneCellModel)= with(itemView){
+            val checkListener ={_:CompoundButton,value:Boolean -> model.regulateZone(item.zoneCode,value)}
             zonecode.text=item.zoneCode
             temperature.text=item.temperature.toString()
             coverage.text=item.coverage
             humidity.text=item.humidity.toString()
+            regulateSwitch.setOnCheckedChangeListener(null)
             regulateSwitch.isChecked=item.regulated
+            regulateSwitch.setOnCheckedChangeListener(null)
             targetTemperature.text=item.targetTemperature.toString()
-            regulateSwitch.setOnCheckedChangeListener { _, isChecked -> model.regulateZone(item.zoneCode,isChecked) }
+            regulateSwitch.setOnCheckedChangeListener(checkListener)
 
         }
     }
