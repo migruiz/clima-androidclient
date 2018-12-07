@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity() {
             humidity.text=item.humidity.toString()
             regulateSwitch.isChecked=item.regulated
             targetTemperature.text=item.targetTemperature.toString()
+            regulateSwitch.setOnCheckedChangeListener { _, isChecked -> model.regulateZone(item.zoneCode,isChecked) }
 
         }
     }

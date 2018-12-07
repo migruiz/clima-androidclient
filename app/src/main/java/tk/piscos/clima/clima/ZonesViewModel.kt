@@ -14,6 +14,10 @@ class ZonesViewModel(application: Application): AndroidViewModel(application)  {
 
 
     private val mqttClient= MQTTClient("tcp://piscos.tk:1883")
+    fun regulateZone(zoneCode:String,value:Boolean) {
+        val request = hashMapOf("Monitored" to value)
+        mqttClient.publish("zoneIsMonitored/$zoneCode", request)
+    }
     fun fetchData() {
         GlobalScope.launch(Dispatchers.Main) {
             val  modelList = getModel()

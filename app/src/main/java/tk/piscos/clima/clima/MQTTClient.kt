@@ -94,6 +94,13 @@ class MQTTClient(val serverURI:String){
             }
         })
     }
+
+    fun <T> publish(topic: String,data:T){
+        val message = MqttMessage()
+        message.payload = data.toJson().toByteArray()
+        mqttAndroidClient.publish(topic, message)
+    }
+
     suspend inline fun <reified T>getResponse(requestTopic: String, responseTopic:String)=getResponse<T,String>(requestTopic,responseTopic,"request")
 
     suspend inline fun <reified U, V >getResponse(requestTopic: String, responseTopic:String,request:V):U = suspendCoroutine { cont ->
