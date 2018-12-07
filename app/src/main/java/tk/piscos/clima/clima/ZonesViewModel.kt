@@ -28,8 +28,8 @@ class ZonesViewModel(application: Application): AndroidViewModel(application)  {
             }.await()
             val zonesBoilerlist = async {
                 mqttClient.getResponse<List<ZoneBoilerData>>(
-                    requestTopic = "AllZonesReadingsRequest",
-                    responseTopic = "AllZonesReadingResponse"
+                    requestTopic = "AllZonesConfigRequest",
+                    responseTopic = "AllZonesConfigResponse"
                 )
             }.await()
             val modelList = zonesClimatelist.map {
