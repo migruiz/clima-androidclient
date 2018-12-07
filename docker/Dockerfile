@@ -11,9 +11,9 @@ RUN mkdir "$ANDROID_HOME" .android \
     && curl -o sdk.zip $SDK_URL \
     && unzip -q sdk.zip \
     && rm sdk.zip \
-    && yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses &> /dev/null
+    && yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses > /dev/null
 # Install Android Build Tool and Libraries
-RUN $ANDROID_HOME/tools/bin/sdkmanager --update &> /dev/null
+RUN $ANDROID_HOME/tools/bin/sdkmanager --update > /dev/null
 RUN $ANDROID_HOME/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS_VERSION}" \
     "platforms;android-${ANDROID_VERSION}" \
     "platform-tools"
