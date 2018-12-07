@@ -29,6 +29,13 @@ class ZonesViewModel(application: Application): AndroidViewModel(application)  {
         GlobalScope.launch(Dispatchers.Main) {
             val  modelList = getModel()
             zones.value = modelList
+            val boilerValvesData = async {
+                mqttClient.getResponse<BoilerValvesData>(
+                    requestTopic = "AllBoilerValvesStateRequest",
+                    responseTopic = "AllBoilerValvesStateResponse"
+                )
+            }.await()
+            boilerValves.value=boilerValvesData
             subscribeToChanges()
         }
     }
@@ -47,14 +54,6 @@ class ZonesViewModel(application: Application): AndroidViewModel(application)  {
                 responseTopic = "AllZonesConfigResponse"
             )
         }.await()
-
-        val boilerValvesData = async {
-            mqttClient.getResponse<BoilerValvesData>(
-                requestTopic = "AllBoilerValvesStateRequest",
-                responseTopic = "AllBoilerValvesStateResponse"
-            )
-        }.await()
-        boilerValves.value=boilerValvesData
         val modelList = zonesClimatelist.map {
             ZoneCellModel(
                 temperature = it.temperature,
