@@ -1,5 +1,4 @@
 package tk.piscos.clima.clima
-
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -9,55 +8,43 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.zones_summary_cell.view.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import com.crashlytics.android.Crashlytics;
+import getViewModel
 import io.fabric.sdk.android.Fabric;
+import observe
 
 class MainActivity : AppCompatActivity() {
 
-    private val mqttClient= MQTTClient("tcp://piscos.tk:1883")
+    private val model:ZonesViewModel get() = getViewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Fabric.with(this,  Crashlytics());
+        Fabric.with(this,  Crashlytics())
         setContentView(R.layout.activity_main)
         rv_zones.setHasFixedSize(true)
         rv_zones.layoutManager = LinearLayoutManager(this)
-        rv_zones.adapter = ZonesAdapter()
-
-    }
-
-    private fun connectToMQTT(zonesAdapter: ZonesAdapter) {
-        GlobalScope.launch(Dispatchers.Main) {
-            async { mqttClient.connectAsync(this@MainActivity) }.await()
-            val list = async { mqttClient.getResponse<List<ZoneCellModel>>(requestTopic = "AllZonesReadingsRequest",responseTopic = "AllZonesReadingResponse") }.await()
-            zonesAdapter.updateElements(list)
-            async {
-                mqttClient.subscribe("ZoneClimateChange") {
-                    zonesAdapter.updateElement(it)
-                }
-            }.await()
+        val adapter=ZonesAdapter()
+        rv_zones.adapter = adapter
+        observe(model.zones){
+            adapter.updateElements(it)
         }
+        observe(model.updatedZone){
+            adapter.updateElement(it)
+        }
+
     }
+
+
 
     override fun onStop() {
-        // call the superclass method first
         super.onStop()
-        mqttClient.disconnect()
+        model.disconnect()
     }
 
     override fun onStart() {
-        // call the superclass method first
         super.onStart()
-        connectToMQTT(rv_zones.adapter as ZonesAdapter)
+        model.fetchData()
     }
-    override fun onDestroy() {
-        super.onDestroy()
 
-
-    }
 
 
     private inner class ZoneItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
