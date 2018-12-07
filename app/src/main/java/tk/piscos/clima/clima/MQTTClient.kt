@@ -60,7 +60,7 @@ class MQTTClient(val serverURI:String){
 
     fun disconnect(){
         topicListeners.clear()
-        var callback= object : IMqttActionListener {
+        val callback= object : IMqttActionListener {
             override fun onSuccess(iMqttToken: IMqttToken) {
 
             }

@@ -20,13 +20,33 @@ class ZonesViewModel(application: Application): AndroidViewModel(application)  {
     fun fetchData() {
         GlobalScope.launch(Dispatchers.Main) {
             async { mqttClient.connectAsync(getApplication()) }.await()
-            val list = async {
-                mqttClient.getResponse<List<ZoneCellModel>>(
+            val zonesClimatelist = async {
+                mqttClient.getResponse<List<ZoneClimateData>>(
                     requestTopic = "AllZonesReadingsRequest",
                     responseTopic = "AllZonesReadingResponse"
                 )
             }.await()
-            zones.value = list
+            val zonesBoilerlist = async {
+                mqttClient.getResponse<List<ZoneBoilerData>>(
+                    requestTopic = "AllZonesReadingsRequest",
+                    responseTopic = "AllZonesReadingResponse"
+                )
+            }.await()
+            val modelList = zonesClimatelist.map {
+                ZoneCellModel(
+                    temperature = it.temperature,
+                    humidity = it.humidity,
+                    coverage = it.coverage,
+                    zoneCode = it.zoneCode
+                )
+            }
+            zonesBoilerlist.forEach {
+                val zoneCellModel=modelList.first{a-> a.zoneCode.equals(it.zoneCode,true)}
+                zoneCellModel.regulated=it.regulated
+                zoneCellModel.targetTemperature=it.targetTemperature
+            }
+
+            zones.value = modelList
             async {
                 mqttClient.subscribe("zoneClimateChange") {
                     updatedZone.value = it
