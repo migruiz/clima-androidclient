@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         observe(model.zones){
             adapter.updateElements(it)
         }
-        observe(model.updatedZone){
+        observe(model.updatedZoneClimateData){
             adapter.updateElement(it)
         }
 
@@ -54,6 +54,8 @@ class MainActivity : AppCompatActivity() {
             temperature.text=item.temperature.toString()
             coverage.text=item.coverage
             humidity.text=item.humidity.toString()
+            regulateSwitch.isChecked=item.regulated
+            targetTemperature.text=item.targetTemperature.toString()
 
         }
     }
@@ -64,7 +66,7 @@ class MainActivity : AppCompatActivity() {
             elements.addAll(newDetails)
             notifyDataSetChanged()
         }
-        fun updateElement(updatedZone:ZoneCellModel){
+        fun updateElement(updatedZone:ZoneClimateData){
             val existingZone = elements.firstOrNull { it.zoneCode.equals(updatedZone.zoneCode,ignoreCase = true) }
             existingZone?.let {
                 it.coverage = updatedZone.coverage

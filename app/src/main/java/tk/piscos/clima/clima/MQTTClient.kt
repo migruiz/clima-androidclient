@@ -78,11 +78,11 @@ class MQTTClient(val serverURI:String){
 
     val topicListeners = HashMap<String, (String)->Unit>()
 
-    suspend fun  subscribe(topic:String,lambda:(ZoneCellModel)->Unit):Unit = suspendCoroutine { cont ->
+    suspend inline  fun  <reified T>subscribe(topic:String, crossinline lambda:(T)->Unit):Unit = suspendCoroutine { cont ->
         mqttAndroidClient.subscribe(topic, 0, null, object : IMqttActionListener {
             override fun onSuccess(asyncActionToken: IMqttToken) {
                 topicListeners[topic] = {
-                    val result:ZoneCellModel = it.toJsonObject()
+                    val result:T = it.toJsonObject()
                     lambda(result)
                 }
                 cont.resume(Unit)
