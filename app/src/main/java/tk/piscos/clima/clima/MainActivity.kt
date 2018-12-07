@@ -1,6 +1,7 @@
 package tk.piscos.clima.clima
 import android.content.Context
 import android.content.DialogInterface
+import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
@@ -35,6 +36,12 @@ class MainActivity : AppCompatActivity() {
         }
         observe(model.lastUpdatedZone){
             adapter.updateElement(it)
+        }
+        observe(model.boilerValves){
+            upValve.setBackgroundColor(if (it.upstairs) Color.RED else Color.WHITE)
+            downValve.setBackgroundColor(if (it.downstairs) Color.RED else Color.WHITE)
+            hotwaterValve.setBackgroundColor(if (it.hotwater) Color.RED else Color.WHITE)
+            testValve.setBackgroundColor(if (it.test) Color.RED else Color.WHITE)
         }
 
     }

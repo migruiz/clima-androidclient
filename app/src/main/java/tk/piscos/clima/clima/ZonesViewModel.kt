@@ -9,6 +9,9 @@ class ZonesViewModel(application: Application): AndroidViewModel(application)  {
 
     val zones = MutableLiveData<List<ZoneCellModel>>()
     val lastUpdatedZone = MutableLiveData<ZoneCellModel>()
+    val boilerValves=MutableLiveData<BoilerValvesData>()
+
+
 
 
 
@@ -44,6 +47,14 @@ class ZonesViewModel(application: Application): AndroidViewModel(application)  {
                 responseTopic = "AllZonesConfigResponse"
             )
         }.await()
+
+        val boilerValvesData = async {
+            mqttClient.getResponse<BoilerValvesData>(
+                requestTopic = "AllBoilerValvesStateRequest",
+                responseTopic = "AllBoilerValvesStateResponse"
+            )
+        }.await()
+        boilerValves.value=boilerValvesData
         val modelList = zonesClimatelist.map {
             ZoneCellModel(
                 temperature = it.temperature,
@@ -84,6 +95,13 @@ class ZonesViewModel(application: Application): AndroidViewModel(application)  {
                 }
             }
         }.await()
+
+        async {
+            mqttClient.subscribe<BoilerValvesData>("AllBoilerValvesStateResponse") {
+                    this@ZonesViewModel.boilerValves.value = it
+            }
+        }.await()
+
     }
 
     fun disconnect(){
