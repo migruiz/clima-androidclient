@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         observe(model.zones){
             adapter.updateElements(it)
         }
-        observe(model.updatedZoneClimateData){
+        observe(model.lastUpdatedZone){
             adapter.updateElement(it)
         }
 
@@ -66,14 +66,9 @@ class MainActivity : AppCompatActivity() {
             elements.addAll(newDetails)
             notifyDataSetChanged()
         }
-        fun updateElement(updatedZone:ZoneClimateData){
-            val existingZone = elements.firstOrNull { it.zoneCode.equals(updatedZone.zoneCode,ignoreCase = true) }
-            existingZone?.let {
-                it.coverage = updatedZone.coverage
-                it.humidity = updatedZone.humidity
-                it.temperature = updatedZone.temperature
-                this.notifyItemChanged(elements.indexOf(it))
-            }
+        fun updateElement(updatedZone:ZoneCellModel){
+            val existingZone = elements.first { it.zoneCode.equals(updatedZone.zoneCode,ignoreCase = true) }
+            this.notifyItemChanged(elements.indexOf(existingZone))
         }
 
         override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int) =

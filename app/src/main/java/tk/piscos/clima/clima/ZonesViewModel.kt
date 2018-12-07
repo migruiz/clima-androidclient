@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 class ZonesViewModel(application: Application): AndroidViewModel(application)  {
 
     val zones = MutableLiveData<List<ZoneCellModel>>()
-    val updatedZoneClimateData = MutableLiveData<ZoneClimateData>()
+    val lastUpdatedZone = MutableLiveData<ZoneCellModel>()
 
 
 
@@ -49,7 +49,13 @@ class ZonesViewModel(application: Application): AndroidViewModel(application)  {
             zones.value = modelList
             async {
                 mqttClient.subscribe<ZoneClimateData>("zoneClimateChange") {
-                    updatedZoneClimateData.value = it
+                    val zoneModel=this@ZonesViewModel.zones.value!!.firstOrNull{a-> a.zoneCode.equals(it.zoneCode,true)}
+                    if (zoneModel!=null) {
+                        zoneModel.temperature = it.temperature
+                        zoneModel.coverage = it.coverage
+                        zoneModel.humidity = it.humidity
+                        this@ZonesViewModel.lastUpdatedZone.value = zoneModel
+                    }
                 }
             }.await()
         }
