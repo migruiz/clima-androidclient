@@ -9,9 +9,9 @@ ENV SDK_URL="https://dl.google.com/android/repository/sdk-tools-linux-4333796.zi
 RUN mkdir "$ANDROID_HOME" .android \
     && cd "$ANDROID_HOME" \
     && curl -o sdk.zip $SDK_URL \
-    && unzip sdk.zip \
+    && unzip -q sdk.zip \
     && rm sdk.zip \
-    && yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses -s
+    && yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses 
 # Install Android Build Tool and Libraries
 RUN $ANDROID_HOME/tools/bin/sdkmanager --update
 RUN $ANDROID_HOME/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS_VERSION}" \
