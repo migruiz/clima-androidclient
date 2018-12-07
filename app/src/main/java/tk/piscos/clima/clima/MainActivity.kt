@@ -18,7 +18,7 @@ import io.fabric.sdk.android.Fabric;
 
 class MainActivity : AppCompatActivity() {
 
-    private val mqttClient= MQTTClient()
+    private val mqttClient= MQTTClient("tcp://piscos.tk:1883")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Fabric.with(this,  Crashlytics());
@@ -32,10 +32,10 @@ class MainActivity : AppCompatActivity() {
     private fun connectToMQTT(zonesAdapter: ZonesAdapter) {
         GlobalScope.launch(Dispatchers.Main) {
             async { mqttClient.connectAsync(this@MainActivity) }.await()
-            val list = async { mqttClient.getZonesSummary() }.await()
+            val list = async { mqttClient.getResponse<List<ZoneCellModel>>(requestTopic = "AllZonesReadingRequest",responseTopic = "AllZonesReadingResponse") }.await()
             zonesAdapter.updateElements(list)
             async {
-                mqttClient.listenForZonesChange {
+                mqttClient.subscribe("ZoneClimateChange") {
                     zonesAdapter.updateElement(it)
                 }
             }.await()

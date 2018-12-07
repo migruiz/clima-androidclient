@@ -12,24 +12,16 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class MQTTClient{
+class MQTTClient(val serverURI:String){
     lateinit var mqttAndroidClient:MqttAndroidClient
     suspend fun  connectAsync(context: Context):Unit = suspendCoroutine { cont ->
 
-        val serverUri = "tcp://piscos.tk:1883"
-
-        var clientId = "ALEA"
-        val subscriptionTopic = "sensor/+"
-
-        val username = "xzxzjowz"
-        val password = "ci5ejcSD1YnD"
+        var clientId = "ALEJANDRO"
         clientId += System.currentTimeMillis()
-        mqttAndroidClient = MqttAndroidClient(context, serverUri, clientId)
+        mqttAndroidClient = MqttAndroidClient(context, serverURI, clientId)
         val mqttConnectOptions = MqttConnectOptions()
         mqttConnectOptions.isAutomaticReconnect = true
         mqttConnectOptions.isCleanSession = false
-        mqttConnectOptions.userName = username
-        mqttConnectOptions.password = password.toCharArray()
         mqttAndroidClient.setCallback(object : MqttCallbackExtended {
             override fun connectComplete(reconnect: Boolean, serverURI: String) {
 
@@ -66,7 +58,7 @@ class MQTTClient{
         })
     }
 
-    fun disconnect():Unit{
+    fun disconnect(){
         topicListeners.clear()
         var callback= object : IMqttActionListener {
             override fun onSuccess(iMqttToken: IMqttToken) {
@@ -84,13 +76,12 @@ class MQTTClient{
 
     }
 
-    private val topicListeners = HashMap<String, (String)->Unit>()
+    val topicListeners = HashMap<String, (String)->Unit>()
 
-    suspend fun  listenForZonesChange(lambda:(ZoneCellModel)->Unit):Unit = suspendCoroutine { cont ->
-        val responseTopicName="zoneClimateChange"
-        mqttAndroidClient.subscribe(responseTopicName, 0, null, object : IMqttActionListener {
+    suspend fun  subscribe(topic:String,lambda:(ZoneCellModel)->Unit):Unit = suspendCoroutine { cont ->
+        mqttAndroidClient.subscribe(topic, 0, null, object : IMqttActionListener {
             override fun onSuccess(asyncActionToken: IMqttToken) {
-                topicListeners[responseTopicName] = {
+                topicListeners[topic] = {
                     val result:ZoneCellModel = it.toJsonObject()
                     lambda(result)
                 }
@@ -103,17 +94,17 @@ class MQTTClient{
             }
         })
     }
-    suspend fun getZonesSummary():List<ZoneCellModel> = suspendCoroutine { cont ->
-        val responseTopicName="AllZonesReadingResponse"
-        var requestTopicName="AllZonesReadingsRequest"
+    suspend inline fun <reified T>getResponse(requestTopic: String, responseTopic:String)=getResponse<T,String>(requestTopic,responseTopic,"request")
+
+    suspend inline fun <reified U, V >getResponse(requestTopic: String, responseTopic:String,request:V):U = suspendCoroutine { cont ->
         val message = MqttMessage()
-        message.payload = "request".toJson().toByteArray()
-        mqttAndroidClient.subscribe(responseTopicName, 0, null, object : IMqttActionListener {
+        message.payload = request.toJson().toByteArray()
+        mqttAndroidClient.subscribe(responseTopic, 0, null, object : IMqttActionListener {
             override fun onSuccess(asyncActionToken: IMqttToken) {
-                topicListeners[responseTopicName] = {
-                    val result:List<ZoneCellModel> = it.toJsonObject()
-                    mqttAndroidClient.unsubscribe(responseTopicName)
-                    topicListeners.remove(responseTopicName)
+                topicListeners[responseTopic] = {
+                    val result:U= it.toJsonObject()
+                    mqttAndroidClient.unsubscribe(responseTopic)
+                    topicListeners.remove(responseTopic)
                     cont.resume(result)
                 }
             }
@@ -124,6 +115,6 @@ class MQTTClient{
             }
         })
 
-        mqttAndroidClient.publish(requestTopicName, message)
+        mqttAndroidClient.publish(requestTopic, message)
     }
 }
