@@ -43,7 +43,9 @@ class MainActivity : AppCompatActivity() {
             hotwaterValve.setBackgroundColor(if (it.hotwater) Color.RED else Color.WHITE)
             testValve.setBackgroundColor(if (it.test) Color.RED else Color.WHITE)
         }
-
+        hotwaterValve.setOnClickListener {
+            model.turnOnHotwater()
+        }
     }
 
 
