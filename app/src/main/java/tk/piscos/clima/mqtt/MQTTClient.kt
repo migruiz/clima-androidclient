@@ -1,16 +1,12 @@
-package tk.piscos.clima.summary
+package tk.piscos.clima.mqtt
 
 import android.content.Context
-import android.util.Log
-import com.google.gson.Gson
 import org.eclipse.paho.android.service.MqttAndroidClient
 import org.eclipse.paho.client.mqttv3.*
 import toJson
 import toJsonObject
 import java.util.HashMap
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
+import kotlin.coroutines.experimental.suspendCoroutine
 
 class MQTTClient(val serverURI:String){
     lateinit var mqttAndroidClient:MqttAndroidClient

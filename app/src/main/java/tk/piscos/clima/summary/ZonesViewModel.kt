@@ -4,6 +4,7 @@ import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.MutableLiveData
 import kotlinx.coroutines.*
+import tk.piscos.clima.mqtt.MQTTClient
 
 class ZonesViewModel(application: Application): AndroidViewModel(application)  {
 
