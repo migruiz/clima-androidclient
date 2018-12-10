@@ -1,7 +1,8 @@
-package tk.piscos.clima.clima
+package tk.piscos.clima.temperaturehistory
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import tk.piscos.clima.clima.R
 
 class HistoryActivity : AppCompatActivity() {
 

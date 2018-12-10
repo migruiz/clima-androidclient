@@ -34,7 +34,7 @@
         <service android:name="org.eclipse.paho.android.service.MqttService">
         </service>
 
-        <activity android:name=".HistoryActivity"
+        <activity android:name="tk.piscos.clima.temperaturehistory.HistoryActivity"
                   android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>

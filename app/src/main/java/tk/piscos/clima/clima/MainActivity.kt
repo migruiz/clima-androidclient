@@ -1,6 +1,5 @@
 package tk.piscos.clima.clima
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
@@ -19,6 +18,7 @@ import com.crashlytics.android.Crashlytics;
 import getViewModel
 import io.fabric.sdk.android.Fabric;
 import observe
+import tk.piscos.clima.temperaturehistory.HistoryActivity
 import java.text.DecimalFormat
 
 class MainActivity : AppCompatActivity() {
