@@ -1,3 +1,3 @@
-package tk.piscos.clima.clima
+package tk.piscos.clima.summary
 
 data class ZoneBoilerData (val  zoneCode:String, val regulated:Boolean, val targetTemperature:Double?)

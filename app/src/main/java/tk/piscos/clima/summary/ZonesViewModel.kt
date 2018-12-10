@@ -1,4 +1,4 @@
-package tk.piscos.clima.clima
+package tk.piscos.clima.summary
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
@@ -63,10 +63,10 @@ class ZonesViewModel(application: Application): AndroidViewModel(application)  {
         }.await()
         val modelList = zonesClimatelist.map {
             ZoneCellModel(
-                temperature = it.temperature,
-                humidity = it.humidity,
-                coverage = it.coverage,
-                zoneCode = it.zoneCode
+                    temperature = it.temperature,
+                    humidity = it.humidity,
+                    coverage = it.coverage,
+                    zoneCode = it.zoneCode
             )
         }
         zonesBoilerlist.forEach {

@@ -1,4 +1,4 @@
-package tk.piscos.clima.clima
+package tk.piscos.clima.summary
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -18,12 +18,13 @@ import com.crashlytics.android.Crashlytics;
 import getViewModel
 import io.fabric.sdk.android.Fabric;
 import observe
+import tk.piscos.clima.clima.R
 import tk.piscos.clima.temperaturehistory.HistoryActivity
 import java.text.DecimalFormat
 
 class MainActivity : AppCompatActivity() {
 
-    private val model:ZonesViewModel get() = getViewModel()
+    private val model: ZonesViewModel get() = getViewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Fabric.with(this,  Crashlytics())
@@ -69,7 +70,7 @@ class MainActivity : AppCompatActivity() {
     private inner class ZoneItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
 
-        fun bind(item:ZoneCellModel)= with(itemView){
+        fun bind(item: ZoneCellModel)= with(itemView){
 
             setOnLongClickListener {
                 val myIntent = Intent(context, HistoryActivity::class.java)
@@ -129,7 +130,7 @@ class MainActivity : AppCompatActivity() {
             elements.addAll(newDetails)
             notifyDataSetChanged()
         }
-        fun updateElement(updatedZone:ZoneCellModel){
+        fun updateElement(updatedZone: ZoneCellModel){
             val existingZone = elements.first { it.zoneCode.equals(updatedZone.zoneCode,ignoreCase = true) }
             this.notifyItemChanged(elements.indexOf(existingZone))
         }

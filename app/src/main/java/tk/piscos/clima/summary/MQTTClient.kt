@@ -1,4 +1,4 @@
-package tk.piscos.clima.clima
+package tk.piscos.clima.summary
 
 import android.content.Context
 import android.util.Log
