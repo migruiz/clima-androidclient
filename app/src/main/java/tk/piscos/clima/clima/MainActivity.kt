@@ -46,6 +46,9 @@ class MainActivity : AppCompatActivity() {
         hotwaterValve.setOnClickListener {
             model.turnOnHotwater()
         }
+        testValve.setOnClickListener {
+            model.turnOnOffTestValve()
+        }
     }
 
 
