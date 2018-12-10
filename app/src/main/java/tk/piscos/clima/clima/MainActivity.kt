@@ -1,6 +1,7 @@
 package tk.piscos.clima.clima
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -66,6 +67,13 @@ class MainActivity : AppCompatActivity() {
 
 
         fun bind(item:ZoneCellModel)= with(itemView){
+
+            setOnLongClickListener {
+                val myIntent = Intent(context, HistoryActivity::class.java)
+                context.startActivity(myIntent)
+                return@setOnLongClickListener true
+            }
+
             val checkListener ={_:CompoundButton,value:Boolean -> model.regulateZone(item.zoneCode,value)}
             zonecode.text=item.zoneCode
             temperature.text=item.temperature.toString()
