@@ -28,6 +28,9 @@ class ZonesViewModel(application: Application): AndroidViewModel(application)  {
     fun turnOnHotwater() {
         mqttClient.publish("HotWaterValve/turn", !boilerValves.value!!.hotwater)
     }
+    fun turnOnOffTestValve() {
+        mqttClient.publish("testValve/turn", !boilerValves.value!!.test)
+    }
 
     fun fetchData() {
         GlobalScope.launch(Dispatchers.Main) {
