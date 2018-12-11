@@ -10,6 +10,7 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.charts.CombinedChart
+import com.github.mikephil.charting.charts.LineChart
 import observe
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.CombinedData
@@ -51,15 +52,19 @@ class HistoryActivity : AppCompatActivity() {
         l.orientation = Legend.LegendOrientation.HORIZONTAL
         l.setDrawInside(false)
         l.textColor = Color.WHITE
-
+        chart.xAxis.setDrawGridLines(true)
         val rightAxis = chart.getAxisRight()
+        rightAxis.setDrawLabels(false)
+        rightAxis.setDrawAxisLine(false)
         rightAxis.textColor = Color.WHITE
         rightAxis.setDrawGridLines(false)
         rightAxis.axisMinimum = 0f // this replaces setStartAtZero(true)
 
         val leftAxis = chart.getAxisLeft()
         leftAxis.textColor = Color.WHITE
-        leftAxis.setDrawGridLines(true)
+        leftAxis.setDrawLabels(false)
+        leftAxis.setDrawAxisLine(false)
+        leftAxis.setDrawGridLines(false)
         leftAxis.axisMinimum = 0f // this replaces setStartAtZero(true)
 
         val xAxis = chart.xAxis

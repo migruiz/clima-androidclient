@@ -12,7 +12,7 @@ class TimeFormatter : IAxisValueFormatter {
         // "value" represents the position of the label on the axis (x or y)
         val timestamp = value.toLong() * 1000
         val d = Date(timestamp)
-        val format = SimpleDateFormat("h:mma")
+        val format = SimpleDateFormat("h:mm")
         format.timeZone = TimeZone.getDefault()
         return format.format(d)
     }
