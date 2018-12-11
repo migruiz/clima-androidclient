@@ -9,6 +9,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import tk.piscos.clima.mqtt.MQTTClient
 import tk.piscos.clima.summary.BoilerValvesData
+import com.github.mikephil.charting.utils.ColorTemplate
+
+
 
 class AllZonesTemperatureHistoryViewModel (application: Application): AndroidViewModel(application)  {
 
@@ -25,5 +28,27 @@ class AllZonesTemperatureHistoryViewModel (application: Application): AndroidVie
             }.await()
             zones.value=history
         }
+    }
+
+    fun getColors():List<Int>{
+        val colors = mutableListOf<Int>()
+        for (c in ColorTemplate.COLORFUL_COLORS)
+            colors.add(c)
+        for (c in ColorTemplate.VORDIPLOM_COLORS)
+            colors.add(c)
+
+        for (c in ColorTemplate.JOYFUL_COLORS)
+            colors.add(c)
+
+
+
+        for (c in ColorTemplate.LIBERTY_COLORS)
+            colors.add(c)
+
+        for (c in ColorTemplate.PASTEL_COLORS)
+            colors.add(c)
+
+        colors.add(ColorTemplate.getHoloBlue())
+        return colors
     }
 }

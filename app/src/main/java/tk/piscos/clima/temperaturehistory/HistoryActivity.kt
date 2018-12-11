@@ -67,7 +67,7 @@ class HistoryActivity : AppCompatActivity() {
         //xAxis.setAxisMinimum(0f);
 
         xAxis.axisMaximum = (System.currentTimeMillis() / 1000 + 60 * 10 * 2).toFloat()
-        //xAxis.setValueFormatter(TimeFormatter())
+        xAxis.valueFormatter = TimeFormatter()
         xAxis.granularity = 1f
         xAxis.textColor = Color.WHITE
         //_chart.setViewPortOffsets(System.currentTimeMillis()/1000-60*60*5,23,System.currentTimeMillis()/1000+60*10*2,18);
@@ -75,9 +75,10 @@ class HistoryActivity : AppCompatActivity() {
 
         val combinedData = CombinedData()
         val lineData = LineData()
+        var colors=model.getColors()
         observe(model.zones){li->
             li.forEach {
-                lineData.addDataSet(CreateLineData(it.zoneCode,it.history,Color.GREEN));
+                lineData.addDataSet(CreateLineData(it.zoneCode,it.history,colors[model.zones.value!!.indexOf(it)]))
             }
             combinedData.setData(lineData)
             chart.data = combinedData
