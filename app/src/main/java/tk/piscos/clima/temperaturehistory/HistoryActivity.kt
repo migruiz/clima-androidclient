@@ -85,8 +85,17 @@ class HistoryActivity : AppCompatActivity() {
             chart.zoom(1.05f,1.01f, (System.currentTimeMillis()/1000-60*60*2).toFloat(), 21F, YAxis.AxisDependency.LEFT);
             chart.invalidate()
         }
+    }
+    override fun onStop() {
+        super.onStop()
+        model.disconnect()
+    }
+
+    override fun onStart() {
+        super.onStart()
         model.fetchData()
     }
+
 
     private fun CreateLineData(name: String, historyEntries: List<HistoryEntryData>, color: Int): LineDataSet {
         val entries = mutableListOf<Entry>()

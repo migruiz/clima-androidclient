@@ -29,6 +29,9 @@ class AllZonesTemperatureHistoryViewModel (application: Application): AndroidVie
             zones.value=history
         }
     }
+    fun disconnect(){
+        mqttClient.disconnect()
+    }
 
     fun getColors():List<Int>{
         val colors = mutableListOf<Int>()
