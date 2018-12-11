@@ -71,9 +71,11 @@ class ZonesViewModel(application: Application): AndroidViewModel(application)  {
             )
         }
         zonesBoilerlist.forEach {
-            val zoneCellModel=modelList.first{a-> a.zoneCode.equals(it.zoneCode,true)}
-            zoneCellModel.regulated=it.regulated
-            zoneCellModel.targetTemperature=it.targetTemperature
+            val zoneCellModel=modelList.firstOrNull(){a-> a.zoneCode.equals(it.zoneCode,true)}
+            if (zoneCellModel!=null) {
+                zoneCellModel.regulated = it.regulated
+                zoneCellModel.targetTemperature = it.targetTemperature
+            }
         }
         return  modelList
     }
