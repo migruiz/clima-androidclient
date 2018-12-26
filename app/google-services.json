@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "495243472626",
+    "firebase_url": "https://clima-b87e7.firebaseio.com",
+    "project_id": "clima-b87e7",
+    "storage_bucket": "clima-b87e7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:495243472626:android:dd4356c82df08d15",
+        "android_client_info": {
+          "package_name": "tk.piscos.clima.clima"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "495243472626-ss1gpqsvfdovoo6kt5ar0ki4ss1tmb7o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0C3bQbw1A0EqwhgMflLu7yrqv1KBCWfc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
