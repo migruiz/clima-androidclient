@@ -12,9 +12,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.NumberPicker
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.zones_summary_cell.view.*
 import com.crashlytics.android.Crashlytics;
+import com.google.firebase.messaging.FirebaseMessaging
 import getViewModel
 import io.fabric.sdk.android.Fabric;
 import observe
@@ -51,6 +53,15 @@ class MainActivity : AppCompatActivity() {
         testValve.setOnClickListener {
             model.turnOnOffTestValve()
         }
+
+        FirebaseMessaging.getInstance().subscribeToTopic("zonesalerts")
+            .addOnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    val msg = "failed subscription"
+                    Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+                }
+            }
+
     }
 
 
