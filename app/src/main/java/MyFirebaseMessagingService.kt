@@ -49,7 +49,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // Check if message contains a notification payload.
         remoteMessage?.notification?.let {
             Log.d(TAG, "Message Notification Body: ${it.body}")
-            sendNotification(it.body.toString())
+            sendNotification(it.title, it.body.toString())
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
@@ -94,7 +94,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // TODO: Implement this method to send token to your app server.
     }
 
-    private fun sendNotification(messageBody: String) {
+    private fun sendNotification(title:String?,messageBody: String) {
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
@@ -103,10 +103,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val channelId = "fcm_default_channel"
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(android.R.drawable.ic_dialog_info)
-            .setContentTitle("BOILER")
+            .setSmallIcon(android.R.drawable.ic_dialog_alert)
+            .setContentTitle(title)
             .setContentText(messageBody)
             .setAutoCancel(true)
+            .setVibrate(arrayOf<Long>(0,1000, 1000, 1000, 1000, 1000, 1000, 1000).toLongArray())
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent)
 
