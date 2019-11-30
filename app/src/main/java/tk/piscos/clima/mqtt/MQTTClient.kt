@@ -16,6 +16,8 @@ class MQTTClient(val serverURI:String){
         clientId += System.currentTimeMillis()
         mqttAndroidClient = MqttAndroidClient(context, serverURI, clientId)
         val mqttConnectOptions = MqttConnectOptions()
+        mqttConnectOptions.userName="zkrwoose"
+        mqttConnectOptions.password="HxaPf1TN7FRf".toCharArray()
         mqttConnectOptions.isAutomaticReconnect = true
         mqttConnectOptions.isCleanSession = false
         mqttAndroidClient.setCallback(object : MqttCallbackExtended {

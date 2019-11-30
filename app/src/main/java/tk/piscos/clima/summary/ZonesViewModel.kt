@@ -17,7 +17,7 @@ class ZonesViewModel(application: Application): AndroidViewModel(application)  {
 
 
 
-    private val mqttClient= MQTTClient("tcp://piscos.tk:1883")
+    private val mqttClient= MQTTClient("tcp://m20.cloudmqtt.com:15330")
     fun regulateZone(zoneCode:String,value:Boolean) {
         val request = hashMapOf("Monitored" to value)
         mqttClient.publish("zoneIsMonitored/$zoneCode", request)
@@ -37,13 +37,6 @@ class ZonesViewModel(application: Application): AndroidViewModel(application)  {
         GlobalScope.launch(Dispatchers.Main) {
             val  modelList = getModel()
             zones.value = modelList
-            val boilerValvesData = async {
-                mqttClient.getResponse<BoilerValvesData>(
-                    requestTopic = "AllBoilerValvesStateRequest",
-                    responseTopic = "AllBoilerValvesStateResponse"
-                )
-            }.await()
-            boilerValves.value=boilerValvesData
             subscribeToChanges()
         }
     }
