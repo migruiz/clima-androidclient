@@ -16,7 +16,7 @@ import com.github.mikephil.charting.utils.ColorTemplate
 class AllZonesTemperatureHistoryViewModel (application: Application): AndroidViewModel(application)  {
 
     val zones = MutableLiveData<List<ZoneHistoryData>>()
-    private val mqttClient= MQTTClient("tcp://m20.cloudmqtt.com:15330")
+    private val mqttClient= MQTTClient("tcp://piscos.tk:1883")
     fun fetchData() {
         GlobalScope.launch(Dispatchers.Main) {
             async { mqttClient.connectAsync(getApplication()) }.await()
