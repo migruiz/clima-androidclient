@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="fill_parent"
-                android:layout_height="100sp"
+                android:layout_height="120sp"
+    android:background="@drawable/rectangle"
+    android:padding="10dp"
 >
 
 
@@ -16,9 +18,7 @@
             android:id="@+id/coverage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@id/zonecode"
-            android:layout_toEndOf="@+id/humidity"
-            android:layout_toStartOf="@id/targetTemperature"
+             android:layout_below="@id/zonecode"
             android:textColor="@color/zoneCoverage"
             android:gravity="center"
             android:text="00100"/>
@@ -27,7 +27,7 @@
             android:id="@+id/temperature"
             android:layout_width="100sp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/zonecode"
+            android:layout_below="@id/coverage"
             android:layout_alignParentStart="true"
             android:maxLines="1"
             android:text="21.3"
@@ -47,25 +47,7 @@
 
 
 
-    <android.support.v7.widget.SwitchCompat
-            android:id="@+id/regulateSwitch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="10dp"
-            android:theme="@style/SwitchCompatTheme"/>
 
-    <TextView
-            android:id="@+id/targetTemperature"
-            android:layout_width="wrap_content"
-            android:layout_below="@id/regulateSwitch"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignBaseline="@id/temperature"
-            android:maxLines="1"
-            android:text="21.1"
-            android:textColor="@color/zoneTargetTemperature"
-            android:textSize="30sp"/>
 
 
 

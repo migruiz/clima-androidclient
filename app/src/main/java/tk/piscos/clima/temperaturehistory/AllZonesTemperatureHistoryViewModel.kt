@@ -8,7 +8,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import tk.piscos.clima.mqtt.MQTTClient
-import tk.piscos.clima.summary.BoilerValvesData
 import com.github.mikephil.charting.utils.ColorTemplate
 
 

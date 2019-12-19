@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -32,7 +33,10 @@ class MainActivity : AppCompatActivity() {
         Fabric.with(this,  Crashlytics())
         setContentView(R.layout.activity_main)
         rv_zones.setHasFixedSize(true)
-        rv_zones.layoutManager = LinearLayoutManager(this)
+        rv_zones.layoutManager = GridLayoutManager(this, 2)
+
+
+
         val adapter=ZonesAdapter()
         rv_zones.adapter = adapter
         observe(model.zones){
@@ -40,18 +44,6 @@ class MainActivity : AppCompatActivity() {
         }
         observe(model.lastUpdatedZone){
             adapter.updateElement(it)
-        }
-        observe(model.boilerValves){
-            upValve.setBackgroundColor(if (it.upstairs) Color.RED else Color.WHITE)
-            downValve.setBackgroundColor(if (it.downstairs) Color.RED else Color.WHITE)
-            hotwaterValve.setBackgroundColor(if (it.hotwater) Color.RED else Color.WHITE)
-            testValve.setBackgroundColor(if (it.test) Color.RED else Color.WHITE)
-        }
-        hotwaterValve.setOnClickListener {
-            model.turnOnHotwater()
-        }
-        testValve.setOnClickListener {
-            model.turnOnOffTestValve()
         }
 
         FirebaseMessaging.getInstance().subscribeToTopic("zonesalerts")
@@ -89,47 +81,12 @@ class MainActivity : AppCompatActivity() {
                 return@setOnLongClickListener true
             }
 
-            val checkListener ={_:CompoundButton,value:Boolean -> model.regulateZone(item.zoneCode,value)}
+
             zonecode.text=item.zoneCode
             temperature.text=item.temperature.toString()
             coverage.text=item.coverage
             humidity.text=item.humidity.toString()
-            regulateSwitch.setOnCheckedChangeListener(null)
-            regulateSwitch.isChecked=item.regulated
-            regulateSwitch.setOnCheckedChangeListener(null)
-            targetTemperature.text=item.targetTemperature.toString()
-            regulateSwitch.setOnCheckedChangeListener(checkListener)
-            targetTemperature.setOnClickListener {
-                val builder = AlertDialog.Builder(it.context)
-                val inflater = it.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                val theView = inflater.inflate(R.layout.temperature_dialog_picker_layout, null)
 
-                val intTemp = theView.findViewById(R.id.int_picker) as NumberPicker
-                val decTemp = theView.findViewById(R.id.decimal_picker) as NumberPicker
-                builder.setView(theView).setPositiveButton("Target") { _, _ ->
-                    var temperature = (intTemp.value + decTemp.value * 0.1f).toDouble()
-                    temperature=Math.round(temperature*10.0)/10.0
-                    model.setTargetTemperature(item.zoneCode,temperature)
-                }.setNegativeButton("Cancel", null)
-                intTemp.minValue = 0
-                intTemp.maxValue = 25
-                decTemp.minValue = 0
-                decTemp.maxValue = 9
-
-                var targetTemperature=if(item.targetTemperature==null)20.0 else item.targetTemperature
-                val twoDForm = DecimalFormat("#.#")
-                targetTemperature = java.lang.Double.valueOf(twoDForm.format(targetTemperature))
-
-                val intTempPart = targetTemperature.toInt()
-                val delta = java.lang.Double.valueOf(twoDForm.format(targetTemperature - targetTemperature.toInt()))
-                val intPartDec = (delta * 10).toInt()
-                intTemp.value = intTempPart
-                decTemp.value = intPartDec
-
-
-                builder.show()
-
-            }
 
 
         }

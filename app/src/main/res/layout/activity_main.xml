@@ -11,62 +11,12 @@
 
     <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_zones"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="16dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/upValve"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_height="0dp"
             android:layout_width="0dp"/>
-    <TextView android:layout_width="0dp"
-              android:layout_height="wrap_content"
-              app:layout_constraintTop_toBottomOf="@id/rv_zones"
-              android:gravity="center"
-              app:layout_constraintStart_toStartOf="parent"
-              app:layout_constraintEnd_toStartOf="@id/downValve"
-              app:layout_constraintBottom_toBottomOf="parent"
-              android:padding="16dp"
-              android:text="UP"
-              android:background="@color/boostColor"
-              android:id="@+id/upValve"
-    />
-    <TextView android:layout_width="0dp"
-              android:layout_height="0dp"
-              android:gravity="center"
-              app:layout_constraintTop_toTopOf="@id/upValve"
-              app:layout_constraintStart_toEndOf="@id/upValve"
-              app:layout_constraintBottom_toBottomOf="@id/upValve"
-              app:layout_constraintEnd_toStartOf="@id/hotwaterValve"
-              android:padding="16dp"
-              android:text="DOWN"
-              android:background="@color/boostColor"
-              android:id="@+id/downValve"/>
-
-    <TextView android:layout_width="0dp"
-              android:layout_height="0dp"
-              android:gravity="center"
-              app:layout_constraintTop_toTopOf="@id/upValve"
-              app:layout_constraintStart_toEndOf="@id/downValve"
-              app:layout_constraintBottom_toBottomOf="@id/upValve"
-              app:layout_constraintEnd_toStartOf="@id/testValve"
-              android:padding="16dp"
-              android:text="WATER"
-              android:background="@color/boostColor"
-              android:id="@+id/hotwaterValve"/>
-
-    <TextView android:layout_width="0dp"
-              android:layout_height="0dp"
-              android:gravity="center"
-              app:layout_constraintTop_toTopOf="@id/upValve"
-              app:layout_constraintStart_toEndOf="@id/hotwaterValve"
-              app:layout_constraintEnd_toEndOf="parent"
-              app:layout_constraintBottom_toBottomOf="@id/upValve"
-              android:padding="16dp"
-              android:text="TEST"
-              android:background="@color/boostColor"
-              android:id="@+id/testValve"/>
 
 
 

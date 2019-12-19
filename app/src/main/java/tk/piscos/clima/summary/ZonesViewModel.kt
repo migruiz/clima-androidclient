@@ -10,7 +10,6 @@ class ZonesViewModel(application: Application): AndroidViewModel(application)  {
 
     val zones = MutableLiveData<List<ZoneCellModel>>()
     val lastUpdatedZone = MutableLiveData<ZoneCellModel>()
-    val boilerValves=MutableLiveData<BoilerValvesData>()
 
 
 
@@ -18,32 +17,13 @@ class ZonesViewModel(application: Application): AndroidViewModel(application)  {
 
 
     private val mqttClient= MQTTClient("tcp://piscos.tk:1883")
-    fun regulateZone(zoneCode:String,value:Boolean) {
-        val request = hashMapOf("Monitored" to value)
-        mqttClient.publish("zoneIsMonitored/$zoneCode", request)
-    }
-    fun setTargetTemperature(zoneCode:String,value:Double) {
-        val request = hashMapOf("temperature" to value)
-        mqttClient.publish("zoneLowestAllowedTemperature/$zoneCode", request)
-    }
-    fun turnOnHotwater() {
-        mqttClient.publish("HotWaterValve/turn", !boilerValves.value!!.hotwater)
-    }
-    fun turnOnOffTestValve() {
-        mqttClient.publish("testValve/turn", !boilerValves.value!!.test)
-    }
+
+
 
     fun fetchData() {
         GlobalScope.launch(Dispatchers.Main) {
             val  modelList = getModel()
             zones.value = modelList
-            val boilerValvesData = async {
-                mqttClient.getResponse<BoilerValvesData>(
-                    requestTopic = "AllBoilerValvesStateRequest",
-                    responseTopic = "AllBoilerValvesStateResponse"
-                )
-            }.await()
-            boilerValves.value=boilerValvesData
             subscribeToChanges()
         }
     }
@@ -56,13 +36,9 @@ class ZonesViewModel(application: Application): AndroidViewModel(application)  {
                 responseTopic = "AllZonesReadingResponse"
             )
         }.await()
-        val zonesBoilerlist = async {
-            mqttClient.getResponse<List<ZoneBoilerData>>(
-                requestTopic = "AllZonesConfigRequest",
-                responseTopic = "AllZonesConfigResponse"
-            )
-        }.await()
-        val modelList = zonesClimatelist.map {
+        return zonesClimatelist
+            .sortedByDescending { it.order }
+            .map {
             ZoneCellModel(
                     temperature = it.temperature,
                     humidity = it.humidity,
@@ -70,14 +46,6 @@ class ZonesViewModel(application: Application): AndroidViewModel(application)  {
                     zoneCode = it.zoneCode
             )
         }
-        zonesBoilerlist.forEach {
-            val zoneCellModel=modelList.firstOrNull(){a-> a.zoneCode.equals(it.zoneCode,true)}
-            if (zoneCellModel!=null) {
-                zoneCellModel.regulated = it.regulated
-                zoneCellModel.targetTemperature = it.targetTemperature
-            }
-        }
-        return  modelList
     }
 
     private suspend fun CoroutineScope.subscribeToChanges() {
@@ -91,23 +59,6 @@ class ZonesViewModel(application: Application): AndroidViewModel(application)  {
                     zoneModel.humidity = it.humidity
                     this@ZonesViewModel.lastUpdatedZone.value = zoneModel
                 }
-            }
-        }.await()
-        async {
-            mqttClient.subscribe<ZoneBoilerData>("zoneBoilerChange") {
-                val zoneModel =
-                    this@ZonesViewModel.zones.value!!.firstOrNull { a -> a.zoneCode.equals(it.zoneCode, true) }
-                if (zoneModel != null) {
-                    zoneModel.targetTemperature = it.targetTemperature
-                    zoneModel.regulated = it.regulated
-                    this@ZonesViewModel.lastUpdatedZone.value = zoneModel
-                }
-            }
-        }.await()
-
-        async {
-            mqttClient.subscribe<BoilerValvesData>("AllBoilerValvesStateResponse") {
-                    this@ZonesViewModel.boilerValves.value = it
             }
         }.await()
 
