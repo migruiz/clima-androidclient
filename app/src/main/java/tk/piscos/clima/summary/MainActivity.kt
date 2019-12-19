@@ -22,6 +22,7 @@ import getViewModel
 import io.fabric.sdk.android.Fabric;
 import observe
 import tk.piscos.clima.clima.R
+import tk.piscos.clima.temperaturehistory.AllZonesTemperatureHistoryViewModel
 import tk.piscos.clima.temperaturehistory.HistoryActivity
 import java.text.DecimalFormat
 
@@ -73,7 +74,7 @@ class MainActivity : AppCompatActivity() {
     private inner class ZoneItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
 
-        fun bind(item: ZoneCellModel)= with(itemView){
+        fun bind(item: ZoneCellModel,colorResId: Int)= with(itemView){
 
             setOnLongClickListener {
                 val myIntent = Intent(context, HistoryActivity::class.java)
@@ -83,6 +84,7 @@ class MainActivity : AppCompatActivity() {
 
 
             zonecode.text=item.zoneCode
+            zonecode.setTextColor(colorResId)
             temperature.text=item.temperature.toString()
             coverage.text=item.coverage
             humidity.text=item.humidity.toString()
@@ -93,6 +95,7 @@ class MainActivity : AppCompatActivity() {
     }
     private inner class ZonesAdapter:RecyclerView.Adapter<ZoneItemViewHolder>() {
         private var elements: MutableList<ZoneCellModel> = arrayListOf()
+        private val colors = AllZonesTemperatureHistoryViewModel.getColors()
         fun updateElements(newDetails: List<ZoneCellModel>) {
             elements.clear()
             elements.addAll(newDetails)
@@ -107,7 +110,7 @@ class MainActivity : AppCompatActivity() {
             ZoneItemViewHolder(LayoutInflater.from(this@MainActivity).inflate(R.layout.zones_summary_cell, viewGroup, false))
 
 
-        override fun onBindViewHolder(holder: ZoneItemViewHolder, position: Int) = holder.bind(elements[position])
+        override fun onBindViewHolder(holder: ZoneItemViewHolder, position: Int) = holder.bind(elements[position],colors[position])
 
         override fun getItemCount()=elements.size
     }

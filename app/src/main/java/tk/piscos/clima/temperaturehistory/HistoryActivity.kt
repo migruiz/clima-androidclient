@@ -80,10 +80,11 @@ class HistoryActivity : AppCompatActivity() {
 
         val combinedData = CombinedData()
         val lineData = LineData()
-        var colors=model.getColors()
+        var colors=AllZonesTemperatureHistoryViewModel.getColors()
         observe(model.zones){li->
-            li.forEach {
-                lineData.addDataSet(CreateLineData(it.zoneCode,it.history,colors[model.zones.value!!.indexOf(it)]))
+            val ordered = li.sortedByDescending { it.order }
+            ordered.forEach {
+                lineData.addDataSet(CreateLineData(it.zoneCode,it.history,colors[ordered.indexOf(it)]))
             }
             combinedData.setData(lineData)
             chart.data = combinedData

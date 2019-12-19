@@ -14,6 +14,29 @@ import com.github.mikephil.charting.utils.ColorTemplate
 
 class AllZonesTemperatureHistoryViewModel (application: Application): AndroidViewModel(application)  {
 
+    companion object{
+        fun getColors():List<Int>{
+            val colors = mutableListOf<Int>()
+            for (c in ColorTemplate.COLORFUL_COLORS)
+                colors.add(c)
+            for (c in ColorTemplate.VORDIPLOM_COLORS)
+                colors.add(c)
+
+            for (c in ColorTemplate.JOYFUL_COLORS)
+                colors.add(c)
+
+
+
+            for (c in ColorTemplate.LIBERTY_COLORS)
+                colors.add(c)
+
+            for (c in ColorTemplate.PASTEL_COLORS)
+                colors.add(c)
+
+            colors.add(ColorTemplate.getHoloBlue())
+            return colors
+        }
+    }
     val zones = MutableLiveData<List<ZoneHistoryData>>()
     private val mqttClient= MQTTClient("tcp://piscos.tk:1883")
     fun fetchData() {
@@ -32,25 +55,5 @@ class AllZonesTemperatureHistoryViewModel (application: Application): AndroidVie
         mqttClient.disconnect()
     }
 
-    fun getColors():List<Int>{
-        val colors = mutableListOf<Int>()
-        for (c in ColorTemplate.COLORFUL_COLORS)
-            colors.add(c)
-        for (c in ColorTemplate.VORDIPLOM_COLORS)
-            colors.add(c)
 
-        for (c in ColorTemplate.JOYFUL_COLORS)
-            colors.add(c)
-
-
-
-        for (c in ColorTemplate.LIBERTY_COLORS)
-            colors.add(c)
-
-        for (c in ColorTemplate.PASTEL_COLORS)
-            colors.add(c)
-
-        colors.add(ColorTemplate.getHoloBlue())
-        return colors
-    }
 }
