@@ -104,6 +104,27 @@ class HistoryActivity : AppCompatActivity() {
 
 
     private fun CreateLineData(name: String, historyEntries: List<HistoryEntryData>, color: Int): LineDataSet {
+        val entries = if (historyEntries.any())  getLineEntries(historyEntries) else listOf<Entry>()
+        val dataSet = LineDataSet(entries, name)
+
+        dataSet.setDrawValues(true)
+        //dataSet.valueFormatter = TemperatureFormatter()
+        dataSet.setDrawCircleHole(false)
+        dataSet.circleRadius = 1.5f
+        dataSet.setCircleColor(color)
+        dataSet.setCircleColorHole(color)
+        dataSet.mode = LineDataSet.Mode.LINEAR
+        dataSet.valueTextSize = 9f
+        dataSet.valueTextColor = color
+        dataSet.color = color
+        dataSet.lineWidth = 1f
+
+
+        return dataSet
+
+    }
+
+    private fun getLineEntries(historyEntries: List<HistoryEntryData>): MutableList<Entry> {
         val entries = mutableListOf<Entry>()
         val firstEntry = historyEntries[0]
         val lastEntry = historyEntries[historyEntries.size - 1]
@@ -122,23 +143,7 @@ class HistoryActivity : AppCompatActivity() {
             entry.data = true
             entries.add(entry)
         }
-        val dataSet = LineDataSet(entries, name)
-
-        dataSet.setDrawValues(true)
-        //dataSet.valueFormatter = TemperatureFormatter()
-        dataSet.setDrawCircleHole(false)
-        dataSet.circleRadius = 1.5f
-        dataSet.setCircleColor(color)
-        dataSet.setCircleColorHole(color)
-        dataSet.mode = LineDataSet.Mode.LINEAR
-        dataSet.valueTextSize = 9f
-        dataSet.valueTextColor = color
-        dataSet.color = color
-        dataSet.lineWidth = 1f
-
-
-        return dataSet
-
+        return entries
     }
 
 }
