@@ -16,7 +16,7 @@ class ZonesViewModel(application: Application): AndroidViewModel(application)  {
 
 
 
-    private val mqttClient= MQTTClient("tcp://piscos.tk:1883")
+    private val mqttClient= MQTTClient("tcp://piscos.ga:1883")
 
 
 

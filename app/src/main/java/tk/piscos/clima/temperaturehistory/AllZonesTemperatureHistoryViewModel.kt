@@ -38,7 +38,7 @@ class AllZonesTemperatureHistoryViewModel (application: Application): AndroidVie
         }
     }
     val zones = MutableLiveData<List<ZoneHistoryData>>()
-    private val mqttClient= MQTTClient("tcp://piscos.tk:1883")
+    private val mqttClient= MQTTClient("tcp://piscos.ga:1883")
     fun fetchData() {
         GlobalScope.launch(Dispatchers.Main) {
             async { mqttClient.connectAsync(getApplication()) }.await()
