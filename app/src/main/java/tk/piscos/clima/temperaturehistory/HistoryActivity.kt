@@ -112,7 +112,7 @@ class HistoryActivity : AppCompatActivity() {
         dataSet.setDrawCircleHole(false)
         dataSet.circleRadius = 1.5f
         dataSet.setCircleColor(color)
-        dataSet.setCircleColorHole(color)
+        dataSet.circleHoleColor = color
         dataSet.mode = LineDataSet.Mode.LINEAR
         dataSet.valueTextSize = 9f
         dataSet.valueTextColor = color
